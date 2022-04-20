@@ -3,6 +3,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:number_trivia/core/error/exception.dart';
+import 'package:number_trivia/core/error/failures.dart';
 import 'package:number_trivia/core/platform/network_info.dart';
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_local_data_source.dart';
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_remote_data_source.dart';
@@ -73,6 +75,17 @@ void main() {
         verify(mockRemoteDataSource.getConcreteNumberTrivia(tNumber));
         verify(mockLocalDataSource.cacheNumberTrivia(tNumberTriviaModel));
         expect(result, const Right(tNumberTrivia));
+      });
+
+      test("Should return server failure when the call to remote data source is unsuccessful", () async {
+        // arrange
+        when(mockRemoteDataSource.getConcreteNumberTrivia(tNumber)).thenThrow(ServerException());
+        // act
+        final result = await repository.getConcreteNumberTrivia(tNumber);
+        // assert
+        verify(mockRemoteDataSource.getConcreteNumberTrivia(tNumber)); // Check that "mockRemoteDataSource.getConcreteNumberTrivia(tNumber)" is called
+        verifyZeroInteractions(mockLocalDataSource); // Check "mockLocalDataSource" has no interaction such as call method "cacheNumberTrivia" after an exception is happened
+        expect(result, Left(ServerFailure())); // Left means Failure at Future<Either<Failure, NumberTrivia>>
       });
 
     });
