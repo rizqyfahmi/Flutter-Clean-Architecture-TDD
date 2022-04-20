@@ -18,14 +18,21 @@ import 'number_trivia_repository_impl_test.mocks.dart';
   NetworkInfo
 ])
 void main() {
-  NumberTriviaRemoteDataSource mockRemoteDataSource = MockNumberTriviaRemoteDataSource();
-  NumberTriviaLocalDataSource mockLocalDataSource = MockNumberTriviaLocalDataSource();
-  NetworkInfo mockNetworkInfo = MockNetworkInfo();
-  NumberTriviaRepositoryImpl repository = NumberTriviaRepositoryImpl(
-    remoteDataSource: mockRemoteDataSource,
-    localDataSource: mockLocalDataSource,
-    networkInfo: mockNetworkInfo
-  );
+  late NumberTriviaRemoteDataSource mockRemoteDataSource;
+  late NumberTriviaLocalDataSource mockLocalDataSource;
+  late NetworkInfo mockNetworkInfo;
+  late NumberTriviaRepositoryImpl repository;
+
+  setUp(() {
+    mockRemoteDataSource = MockNumberTriviaRemoteDataSource();
+    mockLocalDataSource = MockNumberTriviaLocalDataSource();
+    mockNetworkInfo = MockNetworkInfo();
+    repository = NumberTriviaRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      localDataSource: mockLocalDataSource,
+      networkInfo: mockNetworkInfo
+    );
+  });
 
   group("getConcreteNumberTrivia", () {
     const tNumber = 1;
@@ -46,6 +53,7 @@ void main() {
       setUp(() {
         when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       });
+
       test("Should return remote data when the call to remote data source is success", () async {
         // arrange
         when(mockRemoteDataSource.getConcreteNumberTrivia(tNumber)).thenAnswer((_) async => tNumberTriviaModel);
