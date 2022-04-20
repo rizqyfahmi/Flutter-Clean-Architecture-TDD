@@ -1,4 +1,5 @@
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -34,10 +35,26 @@ void main() {
     test("Should check if the device is online", () {
       // arrange
       when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      when(mockRemoteDataSource.getConcreteNumberTrivia(tNumber)).thenAnswer((_) async => tNumberTriviaModel);
       // act
       repository.getConcreteNumberTrivia(tNumber);
       // assert
       verify(mockNetworkInfo.isConnected); // verify that mockNetworkInfo.isConnected is called
+    });
+
+    group("Device is online", () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      });
+      test("Should return remote data when the call to remote data source is success", () async {
+        // arrange
+        when(mockRemoteDataSource.getConcreteNumberTrivia(tNumber)).thenAnswer((_) async => tNumberTriviaModel);
+        // act
+        final result = await repository.getConcreteNumberTrivia(tNumber);
+        // assert
+        verify(mockRemoteDataSource.getConcreteNumberTrivia(tNumber));
+        expect(result, const Right(tNumberTrivia));
+      });
     });
   });
 }
