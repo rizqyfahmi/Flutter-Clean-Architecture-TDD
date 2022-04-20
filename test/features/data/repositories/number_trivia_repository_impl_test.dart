@@ -89,5 +89,26 @@ void main() {
       });
 
     });
+
+    group("Device is offline", () {
+      const tNumber = 1;
+      const tNumberTriviaModel = NumberTriviaModel(text: "Test Text", number: tNumber);
+      const NumberTrivia tNumberTrivia = tNumberTriviaModel;
+      
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+      
+      test("Should return last cached data when the cached data is present", () async {
+        // arrange
+        when(mockLocalDataSource.getLastNumberTrivia()).thenAnswer((_) async => tNumberTriviaModel);
+        // act
+        final result = await repository.getConcreteNumberTrivia(tNumber);
+        // assert
+        verifyZeroInteractions(mockRemoteDataSource);
+        verify(mockLocalDataSource.getLastNumberTrivia());
+        expect(result, const Right(tNumberTriviaModel));
+      });
+    });
   });
 }
