@@ -7,7 +7,7 @@ import 'dart:async' as _i4;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:number_trivia/core/error/failures.dart' as _i5;
-import 'package:number_trivia/features/number_trivia/data/repositories/number_trivia_repository.dart'
+import 'package:number_trivia/features/number_trivia/domain/repositories/number_trivia_repository.dart'
     as _i3;
 import 'package:number_trivia/features/number_trivia/domain/entities/number_trivia.dart'
     as _i6;
