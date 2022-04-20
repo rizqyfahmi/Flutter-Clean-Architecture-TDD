@@ -34,4 +34,17 @@ void main() {
     });
   });
 
+  group("toJson", () {
+    test("Should return a JSON Map containing the proper data", () {
+      // act
+      final result = tNumberTrivia.toJson();
+      // assert
+      const expectedResult = {
+        "text": "Test Text",
+        "number": 1
+      };
+      expect(result, expectedResult);
+    });
+  });
+
 }
