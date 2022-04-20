@@ -5,4 +5,8 @@ class NumberTriviaModel extends NumberTrivia {
     required String text,
     required int number
   }) : super(text: text, number: number);
+
+  factory NumberTriviaModel.fromJSON(Map<String, dynamic> response) {
+    return NumberTriviaModel(text: response["text"], number: response["number"]);
+  }
 }
