@@ -2,10 +2,13 @@ import 'package:number_trivia/core/error/exception.dart';
 import 'package:number_trivia/core/platform/network_info.dart';
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_local_data_source.dart';
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_remote_data_source.dart';
+import 'package:number_trivia/features/number_trivia/data/models/number_trivia_model.dart';
 import 'package:number_trivia/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:number_trivia/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:number_trivia/features/number_trivia/domain/repositories/number_trivia_repository.dart';
+
+typedef Future<NumberTriviaModel> _ConcreteOrRandomChooser();
 
 class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
   final NumberTriviaRemoteDataSource remoteDataSource;
@@ -20,8 +23,17 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
 
   @override
   Future<Either<Failure, NumberTrivia>>? getConcreteNumberTrivia(int number) async {
-    
+    return await _getTrivia(() => remoteDataSource.getConcreteNumberTrivia(number));
+  }
 
+  @override
+  Future<Either<Failure, NumberTrivia>> getRandomNumberTrivia() async {
+    return await _getTrivia(() => remoteDataSource.getRandomNumberTrivia());
+  }
+
+  Future<Either<Failure, NumberTrivia>> _getTrivia(
+    _ConcreteOrRandomChooser getConcreteOrRandom
+  ) async {
     try {
       bool isConnected = await networkInfo.isConnected;
       if (!isConnected) {
@@ -29,7 +41,7 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
         return Right(localData);
       }
 
-      final remoteData = await remoteDataSource.getConcreteNumberTrivia(number);
+      final remoteData = await getConcreteOrRandom();
       localDataSource.cacheNumberTrivia(remoteData);
       return Right(remoteData);
     } on ServerException {
@@ -37,12 +49,6 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
     } on CacheException {
       return Left(CacheFailure());
     }
-  }
-
-  @override
-  Future<Either<Failure, NumberTrivia>> getRandomNumberTrivia() {
-    // TODO: implement getRandomNumberTrivia
-    throw UnimplementedError();
   }
   
 }
