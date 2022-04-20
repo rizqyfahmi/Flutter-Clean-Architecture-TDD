@@ -9,4 +9,15 @@ void main() {
     expect(tNumberTrivia, isA<NumberTrivia>());
   });
 
+  group("fromJson", () {
+    test("Should return a valid model when the JSON number is an integer", () async {
+      // arrange
+      final Map<String, dynamic> jsonMap = jsonDecode(fixture("trivia.json"));
+      // act
+      final result = NumberTriviaModel.fromJSON(jsonMap);
+      // assert
+      expect(result, tNumberTrivia);
+    });
+  });
+
 }
