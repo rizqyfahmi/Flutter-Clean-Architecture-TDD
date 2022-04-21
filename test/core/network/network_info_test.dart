@@ -21,6 +21,13 @@ void main() {
   });
 
   group("isConnected", () {
+    /*
+      If you get "Can't run with sound null safety because dependencies don't support null safety"
+      - Visual code studio: 
+        - Go to setting in preferences
+        - make sure you're in user tab, then search "Flutter test additional args"
+        - Add "--no-sound-null-safety"
+    */
     test("Should forward the call to DataConnectionChecker.hasConnection", () async {
       // arrange
       final tHasConnectionFuture = Future.value(true);
